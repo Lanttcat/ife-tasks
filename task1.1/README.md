@@ -5,10 +5,11 @@
 
 ## 问题
 1. 对测试方面不了解
+
 ## 新注意到的问题
+
 1. css书写规范
-> ###### 顺序规范
-1.位置属性(position, top, right, z-index, display, float等)
+>1.位置属性(position, top, right, z-index, display, float等)
 2.大小(width, height, padding, margin)
 3.文字系列(font, line-height, letter-spacing, color- text-align等)
 4.背景(background, border等)
