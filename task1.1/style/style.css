@@ -1,0 +1,112 @@
+body{
+    display: flex;
+    justify-content: center;
+}
+.box{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-content: center;
+}
+.box-w,.box-s{
+    /*display: flex;
+    */
+
+}
+input{
+    display: none;
+}
+/*伪元素实现*/
+.box-w > label{
+    margin-left: 0.3em;
+}
+.labelStyle-w-checkbox{
+   position: relative; 
+}
+.labelStyle-w-checkbox::before{
+    content: '\00a0';
+    display: inline-block;
+    width: 0.7em;
+    height: 0.7em;
+    border: solid rgb(218,218,218) 2px;
+    position: relative;
+    top:0.3em;
+    right: 0.2em;
+}
+#checkboxId-w:checked+.labelStyle-w-checkbox::after{
+    content: '\00a0';
+    display: inline-block;
+    border: 3px solid rgb(223,60,48);
+    border-top-width: 0;
+    border-right-width: 0; 
+    width: 0.3em;
+    height: 0.2em;
+    position: absolute;
+    left: 0em;
+    top:0.4em;
+    -webkit-transform: rotate(-50deg);
+}
+#checkboxId-w:checked+.labelStyle-w-checkbox::before{
+    border: solid rgb(223,60,48) 2px;
+}
+.labelStyle-w-radio{
+    position: relative;
+}
+
+.labelStyle-w-radio::before{
+    content: '\00a0';
+    display: inline-block;
+    width: 0.8em;
+    height: 0.8em;
+    border: solid rgb(218,218,218) 2px;
+    border-radius: 0.8em;
+    position: relative;
+    top:0.3em;
+    right: 0.2em;
+}
+#radioId-w-1:checked+.labelStyle-w-radio::after,#radioId-w-2:checked+.labelStyle-w-radio::after{
+    content: '\00a0';
+    background-color: rgb(223,60,48);
+    display: inline-block;
+    border: 1px solid rgb(223,60,48);
+    width: 0.3em;
+    height: 0.3em;
+    border-radius: 0.4em;
+    position:absolute;
+    left: 0.1em;
+    top:0.5em;
+}
+#radioId-w-1:checked+.labelStyle-w-radio::before,#radioId-w-2:checked+.labelStyle-w-radio::before{
+    border: solid rgb(223,60,48) 2px;
+}
+
+
+/*雪碧图实现*/
+.labelStyle-s-box,.labelStyle-s-radio{
+    display: inline-block;
+    position: relative;
+    top:2px;
+    width: 1em;
+    height: 1em;
+    background-image: url('../images/scriptrs.png');
+}
+.labelStyle-s-box{
+    background-position: -24px -32px;
+}
+.labelStyle-s-radio{
+    background-position: -24px -10px;
+}
+#checkboxId:checked+label{
+    background-position: -59px -32px;
+}
+#radioId1:checked+label,#radioId2:checked+label{
+    background-position: -59px -10px;
+}
+
+label{
+    -moz-user-select:none; /*火狐*/
+    -webkit-user-select:none; /*webkit浏览器*/
+    -ms-user-select:none; /*IE10*/
+    -khtml-user-select:none; /*早期浏览器*/
+    user-select:none;
+}
