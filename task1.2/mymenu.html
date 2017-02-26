@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>myMenu</title>
+    <link rel="stylesheet" href="style/style.css">
+</head>
+<body>
+    <div id="area" class="area">
+        <h3 id="text">right click to see the</h3>
+        <div id="menu" class="menu">
+            <ul class="ul">
+                <li>Menu Item1</li>
+                <li>Menu Item1</li>
+            </ul>
+        </div>
+    </div>
+    <script>
+        // 可以全局取消浏览器默认的右键事件
+       window.oncontextmenu = function(){return false;}
+       var showMenu = false;  //菜单条目标志位
+       window.onload = function(){
+           
+           var bd = document.getElementsByTagName('body')[0];
+           var area = document.getElementById('area');
+           var menu = document.getElementById("menu");
+           eventDeal.addHandler(bd,"contextmenu",rightClick);   
+           eventDeal.addHandler(bd,"click",clickRemove);   
+           eventDeal.addHandler(area,"click",click);   
+       }
+       function click(){
+           var e = eventDeal.getEvent();
+           if(showMenu){
+                menu.style.display = "none";
+           }else{
+               menu.style.display = "block"
+           }
+           showMenu = !showMenu;
+           eventDeal.stopPropagation();
+
+       }
+       function clickRemove(event){
+           area.style.display = "none";
+           menu.style.display = "none";
+           showMenu = false;
+       }
+       function rightClick(event){
+            
+            
+            var e = eventDeal.getEvent();
+            eventDeal.preventDefault(event);
+            // 鼠标指针位置：
+            // screenX/Y: 参照点也就是原点是整个屏幕的左上角，不限于浏览器内。
+            // clientX/Y: 参照点是浏览器内容区域的左上角（浏览器显示区域的左上角），该参照点会随之滚动条的移动而移动。
+            // pageX/Y：参照点也是浏览器内容区域的左上角（整个页面的左上角），但它不会随着滚动条而变动
+            // 页面宽高：
+            // innerWidth和innerHeight ：当前可视区域的宽度和高度，随浏览器窗口大小变化
+            // scrollWidth和scrollHeight: 整个页面的宽高（整个html页面）
+            // clientWidth和clientHeight：屏幕可视区域宽高，不包括边框（有内容的部分）
+            var winW = document.body.clientWidth,
+                winH = document.body.clientHeight;
+            var pageX = event.pageX,
+                pageY = event.pageY;
+            // var site = GetObjPos(eventDeal.getTarget(bd));
+            // console.log(site.x,site.y)
+            if(winW-pageX<=480 && winH-pageY<=200){
+                area.style.top = pageY-200 + 'px';
+                area.style.left = pageX-480 + 'px';
+            }else if(winW-pageX<=480){
+                area.style.left = pageX-480 + 'px';
+                area.style.top = pageY + 'px';
+            }else if(winH-pageY<=200){
+                area.style.top = pageY-200 + 'px';
+                area.style.left = pageX + 'px';
+            }else{
+                area.style.top = pageY + 'px';
+                area.style.left = pageX + 'px';
+            }
+            
+            
+            area.style.display = 'block';
+            
+            // 类似事件委托的原理，点击定义区域和H3区域都能触发
+            // if(eventDeal.getTarget(event).id === 'area'||eventDeal.getTarget(event).id === "text"){
+            //      // 取消浏览器的默认右键事件
+            //     eventDeal.preventDefault(event);  
+            //     // 弹出菜单              
+            //     menu.style.top = pageY + 'px';
+            //     menu.style.left = pageX + 'px';
+            //     menu.style.display="block";
+            // }else{
+            //     menu.style.display="none";
+            // }
+       }
+    //    对各个浏览器之间不同的事件处理机制进行兼容处理
+    var eventDeal = {
+        getEvent: function(event){
+            return event?event:window.event;
+        },
+        // 1.IE浏览器的事件处理程序和其他的浏览器不同，在IE浏览器中，使用attachEvent()这个方法
+        // 设置事件监听，而在其他的浏览器中，使用addEventListener()进行处理
+        addHandler : function(element,type,handler){
+            if(element.addEventListener){
+                element.addEventListener(type,handler,false);
+            }else if(element.attachEvent){
+                element.attachEvent('on'+type,handler);
+            }else{
+                element['on'+type] = handler;
+            }
+       },
+    //    2. 兼容DOM的浏览器会将一个event对象传入到事件处理程序中，其中每个事件包含的属性和方法
+    //    都不同，但是有些属性和方法是所有的事件共有的：
+    //    bubbles:表明事件是否可以冒泡
+    //    cancelable:表示是否可以取消事件的默认行为
+    //    preventDefault():取消事件默认行为，但是需要cancelable是true
+    //    stopPropagation():取消事件的进一步冒泡或者捕获,需要bubbles是true
+    //    stopImmediatePropagation():取消事件的进一步冒泡或者捕获，同时阻止任何事件处理程序被调用
+    //    target:事件的目标，指向触发的元素
+    //    IE中的事件对象有一些不同
+    //    cancelBubble:默认值为false,设置为true就可以取消事件冒泡，等同stopPropagation()
+    //    returnValue:默认true，设施false等同preventDefault()
+    //    srcElement:等同target
+       getTarget: function(event){
+          return event.target || event.srcElement;
+       },
+       preventDefault: function(event){
+           if(event.preventDefault){
+               event.preventDefault()
+           }else{
+               event.returnValue = false;
+           }
+       },
+       stopPropagation: function(){
+           if(event.stopPropagation){
+               event.stopPropagation();
+           }else{
+               event.cancelBubble = true;
+           }
+       }
+    }
+    
+    /**
+     * 坐标
+     * @param x
+     * @param y
+     * @return
+     */
+    function CPos(x, y)
+    {
+        this.x = x;
+        this.y = y;
+    }
+    /**
+     * 得到对象的相对浏览器的坐标
+     * @param ATarget
+     * @return
+     */
+    function GetObjPos(ATarget)
+    {
+        var target = ATarget;
+        var pos = new CPos(target.offsetLeft, target.offsetTop);
+         
+        var target = target.offsetParent;
+        while (target)
+        {
+            pos.x += target.offsetLeft;
+            pos.y += target.offsetTop;
+             
+            target = target.offsetParent
+        }
+        return pos;
+    }
+    </script>
+</body>
+</html>
