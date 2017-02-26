@@ -28,6 +28,7 @@
            eventDeal.addHandler(bd,"click",clickRemove);   
            eventDeal.addHandler(area,"click",click);   
        }
+    //    处理菜单区域左键点击事件
        function click(){
            var e = eventDeal.getEvent();
            if(showMenu){
@@ -37,16 +38,15 @@
            }
            showMenu = !showMenu;
            eventDeal.stopPropagation();
-
        }
+    //    处理非菜单区域左键点击事件
        function clickRemove(event){
            area.style.display = "none";
            menu.style.display = "none";
            showMenu = false;
        }
-       function rightClick(event){
-            
-            
+    //    处理右键事件
+       function rightClick(event){        
             var e = eventDeal.getEvent();
             eventDeal.preventDefault(event);
             // 鼠标指针位置：
@@ -75,9 +75,7 @@
             }else{
                 area.style.top = pageY + 'px';
                 area.style.left = pageX + 'px';
-            }
-            
-            
+            }          
             area.style.display = 'block';
             
             // 类似事件委托的原理，点击定义区域和H3区域都能触发
@@ -137,38 +135,6 @@
                event.cancelBubble = true;
            }
        }
-    }
-    
-    /**
-     * 坐标
-     * @param x
-     * @param y
-     * @return
-     */
-    function CPos(x, y)
-    {
-        this.x = x;
-        this.y = y;
-    }
-    /**
-     * 得到对象的相对浏览器的坐标
-     * @param ATarget
-     * @return
-     */
-    function GetObjPos(ATarget)
-    {
-        var target = ATarget;
-        var pos = new CPos(target.offsetLeft, target.offsetTop);
-         
-        var target = target.offsetParent;
-        while (target)
-        {
-            pos.x += target.offsetLeft;
-            pos.y += target.offsetTop;
-             
-            target = target.offsetParent
-        }
-        return pos;
     }
     </script>
 </body>
