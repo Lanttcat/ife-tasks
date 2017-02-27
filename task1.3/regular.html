@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <link rel="stylesheet" href="style/style.css">
+</head>
+<body>
+    <h1>正则表达式入门</h1>
+    <div>
+        <div>
+            <label for="phone">手机号码测试</label>
+            <input type="text" id="phone">
+            <button>测试</button>
+            <span></span>
+        </div>
+        <div>
+            <label for="word">重复单词测试</label>
+            <input type="text" id="word">
+            <button>测试</button>
+            <span></span>
+        </div>
+    </div>
+    <script>
+        window.onload = function(){
+            var spanValue = document.getElementsByTagName('span'),
+                btn = document.getElementsByTagName('button');
+                
+            btn[0].addEventListener('click',function(){
+                var phoneValue = document.getElementById("phone").value;
+                var phoneReg = /1\d{10}/g;
+                spanValue[0].innerHTML = phoneReg.test(phoneValue);
+            },false);
+            btn[1].addEventListener('click',function(){
+                var wordValue = document.getElementById("word").value;
+                var wordReg = /\b(\w+)\b\s\1\b/g;
+                spanValue[1].innerHTML = wordReg.test(wordValue);
+            },false);
+
+
+        }
+    </script>
+</body>
+</html>

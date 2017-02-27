@@ -1,0 +1,17 @@
+body{
+    margin: 1em auto;
+    width: 25em;
+}
+div>div{
+    margin: 1em 0;
+}
+
+button{
+    width: 5em;
+    height: 2em;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    outline: none;
+    background-color: rgb(56, 186, 114);
+}
