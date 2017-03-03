@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Markdown</title>
+    <link rel="stylesheet" href="style/style.css">
+</head>
+<body>
+    <header>Markdown</header>
+    <div class="main">
+        <textarea class="edit" id="edit" autofocus='true'></textarea>
+        <div class="output" id="output"></div>
+    </div>
+    <script>
+        
+        var addHandler = function(element,type,handler){
+            if(element.addEventListener){
+                    element.addEventListener(type,handler,false);
+                }else if(element.attachEvent){
+                    element.attachEvent('on'+type,handler);
+                }else{
+                    element['on'+type] = handler;
+                }
+            }
+        
+        var edit = document.getElementById('edit'),
+            output = document.getElementById('output');
+
+        // 添加事件监听
+        addHandler(edit, 'keyup',function(event){
+            output.innerHTML  = marked.init(edit.value); 
+        });
+
+        var marked = {
+            tag:{
+              h1 : /#\s.+(?=\n)/g
+            },
+            init : function(editText){
+                return this.dealH(editText);
+            },
+            // console.log(editText.match(reg_h)[0].slice(2));
+            dealH : function(editText){
+                var long = editText.match(this.tag.h1).length;
+                console.log(editText.match(this.tag.h1)[0].slice(2));
+                for(var i)
+                var outputText = editText.replace(this.tag.h1,'<h1>'+editText.match(this.tag.h1)[0].slice(2)+'</h1>');
+                return outputText;
+            }
+        }
+
+
+        // var edit = document.getElementById('edit'),
+        //     output = document.getElementById('output')
+        //     outputText = '',
+        //     h1Close = false,
+        //     tLength = 0;
+        // // 监听输入字符串
+        // // 使用一个模式的概念
+        // addHandler(edit,'input',function(event){
+            
+        //     var content = edit.value;
+        //     console.log(content.length);
+        //     var h1 = /^#\s$/g;
+        //     var reg_h1 = h1.test(content);
+        //     console.log(reg_h1)
+        //     if(reg_h1 || h1Close){
+        //         // console.log('执行到了这里2');
+        //         if(reg_h1){
+        //             // 第一次进入后，记录字符串长度
+        //             tLength = content.length;
+        //         }
+        //         var t = content.slice(tLength,content.length);
+        //         console.log(tLength,content.length,t);
+        //         var insertH1 = '<h1>'+ t +'</h1>';
+        //         outputText = insertH1;
+        //         console.log(outputText)
+        //         h1Close = true;
+        //     }
+
+        //     output.innerHTML = outputText;
+        // });
+        // // 监听回车键
+        // addHandler(edit, 'keyup',function(event){
+        //     event?event:window.event;
+        //     if(event.keyCode == 13){
+        //         console.log('执行到了这里1')
+        //         outputText = outputText + '<br>';
+        //         h1Close = !h1Close;
+        //         console.log(outputText)
+        //         output.innerHTML = outputText;
+        //     }  
+        // })
+        
+    </script>
+</body>
+</html>
