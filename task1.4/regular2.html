@@ -33,17 +33,88 @@
 
         var marked = {
             tag:{
-              h1 : /#\s.+(?=\n)/g
+              enter:/\n/g,
+              h1 : /#\s.+(?!.\n)/g,
+              quote : /^\>\s.+(?!.\n)/g,
+              orderList: /\d\.\s.+(?!.\n)/g,
+              orderListEnter: /(\d\.\s[\s\S]*)+\n\n/g,
+              ulList: /\*\s.+(?!.\n)/g,
+              ulListEnter: /(\*\s[\s\S]*)+/g, 
             },
             init : function(editText){
                 return this.dealH(editText);
             },
             // console.log(editText.match(reg_h)[0].slice(2));
             dealH : function(editText){
-                var long = editText.match(this.tag.h1).length;
-                console.log(editText.match(this.tag.h1)[0].slice(2));
-                for(var i)
-                var outputText = editText.replace(this.tag.h1,'<h1>'+editText.match(this.tag.h1)[0].slice(2)+'</h1>');
+                var outputText = editText;
+                // var long = editText.match(this.tag.h1).length;
+                // console.log(editText.match(this.tag.h1)[0].slice(2));
+                // for(var i=0;i<long;i++){
+                    // var outputText = editText.replace(this.tag.h1,'<h1>'+editText.match(this.tag.h1)[i].slice(2)+'</h1>');
+
+                // 匹配标题
+                outputText = outputText.replace(this.tag.h1,function(){ 
+                    return '<h1>'+arguments[0].slice(2)+'</h1><br>';
+                });
+                // 匹配引用
+                outputText = outputText.replace(this.tag.quote,function(){   
+                    return "<p class='quote'>"+arguments[0].slice(2)+"</p>";
+                });
+                // 匹配有序列表
+                var ol = '';
+                if(outputText.match(this.tag.orderList)){
+                    outputText.match(this.tag.orderList).map(function(item,index,array){
+                        console.log(item,index,array)
+                        if(index==0){
+                            if(array.length==1){
+                                ol="<ol class='markedUl'>"+"<li>"+item.slice(3)+"</li>"+"</ol>";
+                            }else{
+                                ol="<ol class='markedUl'>"+"<li>"+item.slice(3)+"</li>";
+                            }
+                            
+                        }else if(index==array.length-1){
+                            ol = ol + "<li>"+item.slice(3)+"</li>"+"</ol>";
+                        }else{
+                            ol =ol + "<li>"+item.slice(3)+"</li>";
+                        }
+                    });
+                }
+                outputText = outputText.replace(this.tag.orderListEnter,ol);
+                // outputText = outputText.replace(this.tag.orderList,function(){
+                //     var olFrist = arguments[0].slice(0,1);
+                //     if(olFrist==1){
+                //         ol = "<ol><li id='ol' style='color:blue'>"+arguments[0].slice(3)+"</li></ol>";
+                //     }   
+                //     return "<li id='ol' style='color:blue'>"+arguments[0].slice(3)+"</li>";
+                // });
+
+                // 无序列表
+                var ul = '';
+                if(outputText.match(this.tag.ulList)){
+                    outputText.match(this.tag.ulList).map(function(item,index,array){
+                        if(index==0){
+                            if(array.length==1){
+                                outputText = outputText.replace(item,"<ul class='markedUl'>"+"<li>"+item.slice(2)+"</li>"+"</ul>");
+                            }else{
+                                outputText = outputText.replace(item,"<ul class='markedUl'>"+"<li>"+item.slice(2)+"</li>");
+                            }
+                            
+                        }else if(index==array.length-1){
+                            outputText = outputText.replace(item,"<li>"+item.slice(2)+"</li>"+"</ul>");
+                        }else{
+                            outputText= outputText.replace(item,"<li>"+item.slice(2)+"</li>");
+                        }
+                        console.log(outputText)
+                    });
+                    // console.log(ul)
+                    outputText = outputText.replace(this.tag.ulListEnter,ul);
+                }
+                
+
+                // 匹配换行
+                outputText = outputText.replace(this.tag.enter,function(){   
+                    return "<br>";
+                });
                 return outputText;
             }
         }
