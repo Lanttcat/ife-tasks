@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>轮播图</title>
+    <link rel="stylesheet" href="./style/style.css">
+</head>
+<body>
+    <div class="main">
+        <div class="pic">
+            <img src="images/bg.jpg" alt="">
+            <img src="images/bg.jpg" alt="">
+            <img src="images/bg.jpg" alt="">
+            <img src="images/bg.jpg" alt="">
+            <img src="images/bg.jpg" alt="">
+            <img src="images/bg.jpg" alt="">
+            <img src="images/bg.jpg" alt="">
+            <img src="images/bg.jpg" alt="">
+        </div>
+    </div>
+    <!--<script>
+        // alert(50 / Math.tan(22.5 / 180 * Math.PI))
+        window.onload = function(){
+            var img = document.getElementsByTagName('img');
+            var imgDeg = [0,45,90,135,180,225,270,315];
+            console.log(imgDeg)
+            for(var i=0;i<img.length;i++){
+                var index = i;
+                img[i].onclick = transformPic();
+            }
+        }
+        function transformPic(){
+
+        }
+    </script>-->
+    <script>
+        var img = document.getElementsByTagName('img');
+        element.style.transform = 'translate(500px, 0)';
+        element.style.OTransform = 'translate(500px, 0)';          // Opera
+        element.style.msTransform = 'translate(500px, 0)';         // IE 9
+        element.style.MozTransform = 'translate(500px, 0)';        // Firefox
+        element.style.WebkitTransform = 'translate(500px, 0)';     // Safari and Chrome
+    </script>
+</body>
+</html>
