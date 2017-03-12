@@ -1,14 +1,19 @@
 body{
     display: flex;
     justify-content: center;
+    align-items: center;
 }
 .main{
     margin: 2em auto;
     position: relative;
+    top:5em;
     width: 100px;
     height: 50px;
-    /*perspective-origin: center;*/
     perspective: 300px;
+}
+h1{
+    position: relative;
+    top: -4em;
 }
 .pic{
     position: absolute;
@@ -20,7 +25,6 @@ body{
 img{
     position: absolute;
     width: 100px;
-    /*animation: show 8s linear infinite;*/
 }
 
 img:nth-child(1) {animation: img1 12s linear infinite;  }
