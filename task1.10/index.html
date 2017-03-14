@@ -6,25 +6,119 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>默然播放器</title>
     <link rel="stylesheet" href="style/style.css">
+    <link rel="stylesheet" href="font-awesome-4.7.0/css/font-awesome.min.css">
 </head>
 <body>
+    <div class="source">
+        <input type="file" id="musicFileL">
+        <input type="text" id="musicFileW">
+        <button>提交</button>
+    </div>
     <div class="panel">
         <!--歌曲信息-->
         <div class="songName">
             <h5>成都</h5>
-            <h6>赵雷</h6>
+            <b>赵雷</b>
         </div>
         <!--歌曲具体信息显示-->
-        <div>
-            <audio src=""></audio>
+        <div class="songPlay">
+            <i class="fa fa-volume-up" aria-hidden="true" id="volume"></i>
+            <input type="range" id="range" name="volume-value" min="0" max="100" />
+            <i class="fa fa-exchange" aria-hidden="true" id="order"></i>
+            <i class="fa fa-random" aria-hidden="true" id="random"></i>
+            <i class="fa fa-repeat" aria-hidden="true" id="loop"></i>
+            <span class="lastTime" id="lastTime"></span>
+            <div class="songStatu" id="statu"></div>
+            <audio id="audio">
+                <source src="http://demo.mimvp.com/html5/take_you_fly.mp3" type="audio/mpeg">
+            </audio>
         </div>
         <!--控制相关-->
-        <div></div>
+        <div>
+            <i class="fa fa-heart fa-2x" aria-hidden="true" id="heard"></i>
+            <i class="fa fa-trash fa-2x" aria-hidden="true" id="trash"></i>
+            <i class="fa fa-pause fa-2x" aria-hidden="true" id="pause"></i>
+            <i class="fa fa-play fa-2x" aria-hidden="true" id="play"></i>
+            <i class="fa fa-forward fa-2x" aria-hidden="true" id="forward"></i>
+        </div>
         <!--歌曲封面-->
         <div class="songCover">
-            <img src="" alt="">
+            <img src="images/song.jpg" alt="">
         </div>
         
     </div>
+
+    <script>
+        var songPlayStatu = 0; 
+        window.onload = function(){
+           
+            var audio = document.getElementById('audio'),
+                play = document.getElementById('play'),
+                pause = document.getElementById('pause'),
+                statu = document.getElementById('statu'),
+                heard = document.getElementById('heard'),
+                lastTime = document.getElementById("lastTime"),
+                order = document.getElementById("order"),
+                random = document.getElementById("random"),
+                loop = document.getElementById("loop"),
+                range = document.getElementById("range");
+
+            // alert(audio.loop)
+            // console.log(audio.name)
+            order.addEventListener('click',songPlayOrder,false);
+            random.addEventListener('click',songPlayOrder,false);
+            loop.addEventListener('click',songPlayOrder,false);
+            play.addEventListener('click',function(){
+                // audio.className = 'fa fa-pause fa-2x';
+                play.style.display = "none";
+                pause.style.display = "block";
+                audio.play();
+            },false);
+            pause.addEventListener('click',function(){
+                pause.style.display = "none";
+                play.style.display = "block";
+                audio.pause();
+                console.log(audio.currentTime)
+            },false);
+            heard.addEventListener("click",function(){
+                if(this.style.color == "red"){
+                    this.style.color = "black"
+                }else{
+                    this.style.color = "red";
+                }
+            },false);
+            range.addEventListener('mousemove',function(){
+                 audio.volume = range.value/100;
+            },false)
+            
+        }
+        console.log(audio.currentTime);
+        var time = setInterval(function(){
+            statu.style.width = audio.currentTime/audio.duration*27*16+"px";
+            lastTime.innerHTML = "-" + parseInt((audio.duration-audio.currentTime)/60) + ":" + parseInt((audio.duration-audio.currentTime)%60);
+            if(audio.currentTime == audio.duration){
+                clearInterval(time);
+            }
+            console.log()
+        },100);
+
+        function songPlayOrder(){
+             if(songPlayStatu==0){
+                order.style.display = "none";
+                loop.style.display = 'block';
+                songPlayStatu = 1;
+                audio.loop = true;
+             }else if(songPlayStatu==1){
+                loop.style.display = "none";
+                random.style.display = 'block';
+                songPlayStatu = 2;
+             }else{
+                random.style.display = "none";
+                order.style.display = 'block';
+                songPlayStatu = 0;
+             }
+        }
+        
+    </script>
 </body>
 </html>
