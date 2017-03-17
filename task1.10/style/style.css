@@ -32,7 +32,7 @@
     width: 27em;
     height: 0.1em;
     background: rgb(220, 220, 220);
-
+    border: solid 5px rgb(251, 251, 251);
 }
 #order,#random,#loop{
     position: absolute;
@@ -72,6 +72,11 @@ input[type=range]::-webkit-slider-runnable-track {
     position: absolute;
     top: -1.5em;
     left: 20em;
+}
+#list{
+    position: absolute;
+    top: -1.5em;
+    left: 18em;
 }
 .lastTime{
     position: absolute;

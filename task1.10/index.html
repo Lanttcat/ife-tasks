@@ -10,33 +10,40 @@
 </head>
 <body>
     <div class="source">
-        <input type="file" id="musicFileL">
+        <input type="file" id="musicFileL" id="localMusic">
         <input type="text" id="musicFileW">
-        <button>提交</button>
+        <button id="addByLocal">添加到播放列表</button>
     </div>
     <div class="panel">
         <!--歌曲信息-->
         <div class="songName">
-            <h5>成都</h5>
-            <b>赵雷</b>
+            <h5 id="musicName">暂无</h5>
+            <b id="musicAuther">暂无</b>
         </div>
         <!--歌曲具体信息显示-->
-        <div class="songPlay">
+        <div class="songPlay" id="songPlay">
+            <!--列表按钮-->
+            <i class="fa fa-list" aria-hidden="true" id="list"></i>
+            <ul id="playList"></ul>
+            <!--音量按钮-->
             <i class="fa fa-volume-up" aria-hidden="true" id="volume"></i>
             <input type="range" id="range" name="volume-value" min="0" max="100" />
+            <!--播放顺序按钮-->
             <i class="fa fa-exchange" aria-hidden="true" id="order"></i>
             <i class="fa fa-random" aria-hidden="true" id="random"></i>
             <i class="fa fa-repeat" aria-hidden="true" id="loop"></i>
             <span class="lastTime" id="lastTime"></span>
             <div class="songStatu" id="statu"></div>
             <audio id="audio">
-                <source src="http://demo.mimvp.com/html5/take_you_fly.mp3" type="audio/mpeg">
             </audio>
         </div>
         <!--控制相关-->
         <div>
+            <!--喜欢按钮-->
             <i class="fa fa-heart fa-2x" aria-hidden="true" id="heard"></i>
+            <!--扔入垃圾箱-->
             <i class="fa fa-trash fa-2x" aria-hidden="true" id="trash"></i>
+            <!--暂停功能-->
             <i class="fa fa-pause fa-2x" aria-hidden="true" id="pause"></i>
             <i class="fa fa-play fa-2x" aria-hidden="true" id="play"></i>
             <i class="fa fa-forward fa-2x" aria-hidden="true" id="forward"></i>
@@ -49,7 +56,16 @@
     </div>
 
     <script>
-        var songPlayStatu = 0; 
+        var songPlayStatu = 0;
+        var songOrder = 0;
+        var regAuther = /([\s\S]*)(?=\.mp3)/;
+        var musicInfo = [
+            // {
+            //     name:"",
+            //     auther:"",
+            //     url:""
+            // }
+        ];
         window.onload = function(){
            
             var audio = document.getElementById('audio'),
@@ -61,10 +77,54 @@
                 order = document.getElementById("order"),
                 random = document.getElementById("random"),
                 loop = document.getElementById("loop"),
-                range = document.getElementById("range");
-
-            // alert(audio.loop)
-            // console.log(audio.name)
+                range = document.getElementById("range"),
+                addByLocal = document.getElementById("addByLocal"),
+                musicName = document.getElementById('musicName'),
+                musicAuther = document.getElementById('musicAuther'),
+                songPlay = document.getElementById('songPlay');
+            
+            //添加本地加载音乐功能
+            addByLocal.addEventListener('click',function(){
+                var music = document.getElementsByTagName('input')[0].files[0];
+                musicInfo.push({
+                    name:regAuther.exec(music.name)[0],
+                    auther:null,
+                    url:URL.createObjectURL(music),
+                    cover:null
+                })
+            //如果是首次添加，则添加到播放列表
+                if(musicInfo.length == 1){
+                    addAudioSource(musicInfo[0].url,musicInfo[0].name,musicInfo[0].auther);
+                    
+                    songOrder = 0;
+                }
+               console.log(musicInfo)
+            },false);
+            // 给播放器添加监听
+            audio.addEventListener('ended',function(){
+                console.log(songPlayStatu)
+                // 检查当前播放顺序
+                if(songPlayStatu==0){
+                    songOrder++;
+                    addAudioSource(musicInfo[songOrder].url,musicInfo[songOrder].name,musicInfo[songOrder].auther);
+                    audio.play();
+                    time.set;
+                }else if(songPlayStatu==1){
+                    addAudioSource(musicInfo[songOrder].url,musicInfo[songOrder].name,musicInfo[songOrder].auther);
+                    audio.play();
+                    time.set;
+                }else{
+                    var order = parseInt(Math.random()*1000)%musicInfo.length;
+                    addAudioSource(musicInfo[order].url,musicInfo[order].name,musicInfo[order].auther);
+                    audio.play();
+                    time.set;
+                }
+            });
+            // 实现快进功能
+            songPlay.addEventListener('click',function(e){
+                console.log(e.pageX,songPlay.getBoundingClientRect().left);
+                audio.currentTime = parseInt(e.pageX-songPlay.getBoundingClientRect().left)/432*audio.duration;
+            });
             order.addEventListener('click',songPlayOrder,false);
             random.addEventListener('click',songPlayOrder,false);
             loop.addEventListener('click',songPlayOrder,false);
@@ -73,12 +133,12 @@
                 play.style.display = "none";
                 pause.style.display = "block";
                 audio.play();
+                time.set;
             },false);
             pause.addEventListener('click',function(){
                 pause.style.display = "none";
                 play.style.display = "block";
                 audio.pause();
-                console.log(audio.currentTime)
             },false);
             heard.addEventListener("click",function(){
                 if(this.style.color == "red"){
@@ -92,15 +152,17 @@
             },false)
             
         }
-        console.log(audio.currentTime);
-        var time = setInterval(function(){
-            statu.style.width = audio.currentTime/audio.duration*27*16+"px";
-            lastTime.innerHTML = "-" + parseInt((audio.duration-audio.currentTime)/60) + ":" + parseInt((audio.duration-audio.currentTime)%60);
-            if(audio.currentTime == audio.duration){
-                clearInterval(time);
-            }
-            console.log()
-        },100);
+        var time = {
+            set:setInterval(function(){
+                statu.style.width = audio.currentTime/audio.duration*27*16+"px";
+                lastTime.innerHTML = "-" + parseInt((audio.duration-audio.currentTime)/60) + ":" + parseInt((audio.duration-audio.currentTime)%60);
+                if(audio.currentTime == audio.duration){
+                    clearInterval(time);
+                }
+                // console.log()
+            },100),
+            clear:clearInterval(this.set)
+        }
 
         function songPlayOrder(){
              if(songPlayStatu==0){
@@ -117,6 +179,27 @@
                 order.style.display = 'block';
                 songPlayStatu = 0;
              }
+        }
+        
+        function addAudioSource(url,name,auther){
+            audio.type= 'audio/mpeg';
+            audio.src = url;
+            musicName.innerHTML = name;
+            if(auther==null){
+                musicAuther.innerHTML = '暂无';
+            }else{
+                musicAuther.innerHTML = auther;
+            }
+            //创建元素
+            // var source= document.createElement('source'); 
+            // if (audio.canPlayType('audio/mpeg;')) {
+            //     source.type= 'audio/mpeg';
+            //     source.src= url;
+            // } else {
+            //     source.type= 'audio/ogg';
+            //     source.src= url;
+            // }
+            // audio.appendChild(source);
         }
         
     </script>
