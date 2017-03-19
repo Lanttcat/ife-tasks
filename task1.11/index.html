@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Vue动态数据绑定1</title>
+    <style>
+        h1{
+            width: 10em;
+            margin: 2em auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>Vue动态数据绑定1</h1>
+    <script>
+        var data = {
+            user: {
+                name: "liangshaofeng",
+                age: "24"
+            },
+            address: {
+                city: "beijing"
+            }
+        }
+        
+        function Observer(obj){
+            this.obj = obj;
+            this.addProp(obj);
+        }
+        var p = Observer.prototype;
+        p.addProp = function(obj){
+            // 首先要先判断对象里是否还有对象
+            var val;
+            for(var key in obj){
+                
+                // 使用hasOwnProperty可以忽略原型链上继承的属性
+                // 原型链上的继承得到的属性不能添加监听
+                if(obj.hasOwnProperty(key)){
+                    // 再取判断属性是否是对象
+                    val = obj[key];
+                    if(typeof val == 'object' ){
+                        // 使用递归的方法，继续添加监听
+                        new Observer(val);
+                    }
+                    // 使用Object.defineProperty(obj, prop, descriptor)有三个参数
+                    this.convert(key,val)
+                }
+            }
+        }
+        p.convert = function(key,val){
+            Object.defineProperty(this.obj,key,{
+                // 当且仅当该属性的 configurable 为 true 时，该属性描述符才能够被改变，也能够被删除。默认为 false。
+                configurable : true,
+                // 当且仅当该属性的 enumerable 为 true 时，该属性才能够出现在对象的枚举属性中。默认为 false。
+                configurable : true,
+                get : function(){
+                    console.log('你访问了' + key);
+                    return val;
+                },
+                set : function(newVal){
+                    console.log('你设置了' + key);
+                    console.log('新的' + key + ' = ' + newVal)
+                    if (newVal === val) return;
+                    val = newVal;
+                }
+            });
+        } 
+        var app = new Observer(data);
+    </script>
+</body>
+</html>
