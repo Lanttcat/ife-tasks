@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Vue动态数据绑定1</title>
+    <title>Vue动态数据绑定2</title>
     <style>
         h1{
             width: 10em;
@@ -13,7 +13,7 @@
     </style>
 </head>
 <body>
-    <h1>Vue动态数据绑定1</h1>
+    <h1>Vue动态数据绑定2</h1>
     <script>
         var data = {
             user: {
@@ -27,14 +27,28 @@
         
         function Observer(obj){
             this.obj = obj;
-            this.addProp(obj);
+            this.addProp(obj);         
+            this.obj.$watch = function(key,callback){
+                if(typeof callback == 'function'){
+                    Object.defineProperty(obj,key,{
+                            // 当且仅当该属性的 configurable 为 true 时，该属性描述符才能够被改变，也能够被删除。默认为 false。
+                            enumerable: true,
+                            // 当且仅当该属性的 enumerable 为 true 时，该属性才能够出现在对象的枚举属性中。默认为 false。
+                            configurable : true,
+                            set : function(newVal){
+                                console.log("这是第一步");
+                                callback();
+                                return newVal;
+                            }
+                        });
+                    } 
+                }
         }
         var p = Observer.prototype;
         p.addProp = function(obj){
             // 首先要先判断对象里是否还有对象
             var val;
-            for(var key in obj){
-                
+            for(var key in obj){            
                 // 使用hasOwnProperty可以忽略原型链上继承的属性
                 // 原型链上的继承得到的属性不能添加监听
                 if(obj.hasOwnProperty(key)){
@@ -50,6 +64,7 @@
             }
         }
         p.convert = function(key,val){
+            var that = this;
             Object.defineProperty(this.obj,key,{
                 // 当且仅当该属性的 configurable 为 true 时，该属性描述符才能够被改变，也能够被删除。默认为 false。
                 enumerable: true,
@@ -61,14 +76,24 @@
                     return val;
                 },
                 set : function(newVal){
-                    console.log('你设置了' + key);
-                    console.log('新的' + key + ' = ' + newVal)
-                    if (newVal === val) return;
-                    val = newVal;
+                    if(typeof newVal == 'object'){
+                        console.log('你设置了' + key);
+                        console.log('新的' + key + ' = ' + JSON.stringify(newVal));
+                        val = newVal;
+                        new Observer(val);
+                    }else{
+                        console.log('你设置了' + key);
+                        console.log('新的' + key + ' = ' + newVal);
+                        if (newVal === val) return;
+                        val = newVal;
+                    }
+                    
                 }
             });
         } 
         var app = new Observer(data);
+        // 测试数据 dd
+        // data.$watch('name',function(){console.log('我终于访问到了这里')})
     </script>
 </body>
 </html>
