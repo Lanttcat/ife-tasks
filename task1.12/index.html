@@ -27,24 +27,43 @@
         
         function Observer(obj){
             this.obj = obj;
-            this.addProp(obj);         
-            this.obj.$watch = function(key,callback){
-                if(typeof callback == 'function'){
-                    Object.defineProperty(obj,key,{
-                            // 当且仅当该属性的 configurable 为 true 时，该属性描述符才能够被改变，也能够被删除。默认为 false。
-                            enumerable: true,
-                            // 当且仅当该属性的 enumerable 为 true 时，该属性才能够出现在对象的枚举属性中。默认为 false。
-                            configurable : true,
-                            set : function(newVal){
-                                console.log("这是第一步");
-                                callback();
-                                return newVal;
-                            }
-                        });
-                    } 
-                }
+            // this.obj.prototype.data = {};
+            this.addProp(obj);
+               
         }
+        // app.$watch('name',function(){console.log('我终于访问到了这里')})
         var p = Observer.prototype;
+        p.$watch = function(key,callback){
+                var that = this;
+                if(typeof callback == 'function'){
+                    console.log('iiiiiiiiiiiii')
+                     var tab = findKey(key,that.obj,callback);
+                }            
+        }
+        function findKey(key,obj,callback){
+            if(obj.hasOwnProperty(key)){
+                    Object.defineProperty(obj,key,{
+                    // 当且仅当该属性的 configurable 为 true 时，该属性描述符才能够被改变，也能够被删除。默认为 false。
+                    enumerable: true,
+                    // 当且仅当该属性的 enumerable 为 true 时，该属性才能够出现在对象的枚举属性中。默认为 false。
+                    configurable : true,
+                    set : function(newVal){
+                        callback();
+                        console.log('ddddddd');
+                        return newVal;
+                    }
+                });
+            }else{
+                console.log('no');
+                for(var keys in obj){
+                    console.log(keys);
+                    if(typeof obj[keys] == 'object'){
+                        findKey(key,obj[keys],callback);
+                    }                 
+                }
+                
+            }
+        }
         p.addProp = function(obj){
             // 首先要先判断对象里是否还有对象
             var val;
@@ -59,7 +78,8 @@
                         new Observer(val);
                     }
                     // 使用Object.defineProperty(obj, prop, descriptor)有三个参数
-                    this.convert(key,val)
+                    // obj.data[key] = obj;
+                    this.convert(key,val);
                 }
             }
         }
@@ -93,7 +113,7 @@
         } 
         var app = new Observer(data);
         // 测试数据 dd
-        // data.$watch('name',function(){console.log('我终于访问到了这里')})
+        // app.$watch('name',function(){console.log('我终于访问到了这里')})
     </script>
 </body>
 </html>
