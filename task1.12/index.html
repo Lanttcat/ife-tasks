@@ -27,16 +27,13 @@
         
         function Observer(obj){
             this.obj = obj;
-            // this.obj.prototype.data = {};
             this.addProp(obj);
                
         }
-        // app.$watch('name',function(){console.log('我终于访问到了这里')})
         var p = Observer.prototype;
         p.$watch = function(key,callback){
                 var that = this;
                 if(typeof callback == 'function'){
-                    console.log('iiiiiiiiiiiii')
                      var tab = findKey(key,that.obj,callback);
                 }            
         }
