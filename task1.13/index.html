@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>树形组件</title>
+    <style>
+            header,div{
+                width: 400px;
+                margin: 1em auto;
+            }
+        div ul{
+            list-style: none;
+        }
+        div li{
+            padding-left: 0.5em;
+            border-left: solid red 1px;
+        }
+        div li::before{
+            content: '';
+            position: relative;
+            top: -0.3em;
+            left: -0.5em;
+            display: inline-block;
+            width: 1.2em;
+            height: 0em;
+            border-top: 1px solid red;
+        }
+        div ul li:last-child{
+            height: 0.75em;
+            margin-bottom: 0.5em;
+        }
+
+   
+
+        .ulclass li ul{
+            display: none;
+        }
+
+
+    </style>
+</head>
+<body>
+    <header>
+        <h1>实现树形组件</h1>
+    </header>
+    <div>
+        <ul id="createNode" class='ulclass'>>
+
+        </ul>
+    </div>
+    <script>
+        var nodes = [ 
+                {name: "父节点1", children: [ {name: "子节点1"}, {name: "子节点2"} ]},
+                {name: "父节点2", children: [ {name: "子节点3"}, {name: "子节点4", children:[ {name:"子节点5"} ]} ]}
+            ];
+        var nodeDomText = '';
+        window.onload = function(){
+            var ulNode = document.getElementById('createNode');
+            searchNodes(nodes);
+            console.log(nodeDomText);
+            ulNode.innerHTML = nodeDomText;
+            var ulNodeClick = document.getElementsByClassName('ulclass')
+            // alert(ulNodeClick.length);
+            for(var i=0;i<ulNodeClick.length;i++){
+                ulNodeClick[i].addEventListener('click',function(e){
+                    if(e.target.childNodes[1].style.display=='block'){
+                        e.target.childNodes[1].style.display='none';
+                    }else{
+                        e.target.childNodes[1].style.display='block';
+                    }
+
+                    
+                },false);
+            }
+            
+        } 
+        function searchNodes(node){
+            var nodes = node;
+            for(var i=0;i<nodes.length;i++){
+                nodeDomText += '<li>';
+                if(nodes[i].children){
+                    nodeDomText += nodes[i].name + "<ul class='ulclass'>";
+                    // if(i==0){
+                    //     nodeDomText += '<ul>' + node[i].children[0].name;
+                    // }else if(i == nodes.length-1){
+                    //     nodeDomText += node[i].children.name + '</ul>';
+                    // }else{
+                    //     nodeDomText += node[i].children.name;
+                    // }
+                    searchNodes(nodes[i].children);
+                    nodeDomText +=  '</ul>';
+                }else{
+                    nodeDomText += nodes[i].name + '</li>';
+                }
+
+                
+            }
+        }
+
+        
+    </script>
+</body>
+</html>
